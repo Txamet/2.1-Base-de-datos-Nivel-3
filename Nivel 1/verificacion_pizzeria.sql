@@ -1,4 +1,4 @@
 -- 1. Llista quants productes de tipus “Begudes”. s'han venut en una determinada localitat.
 SELECT productos.nombre, SUM(productos_pedido.cantidad) AS Total FROM productos JOIN productos_pedido ON productos_pedido.id_producto = productos.id_producto JOIN pedidos ON productos_pedido.id_pedido = pedidos.id_pedido JOIN tiendas ON pedidos.id_tienda = tiendas.id_tienda WHERE productos.tipo = "bebida" AND tiendas.localidad = "Barcelona" GROUP BY productos.nombre; 
 -- 2. Llista quantes comandes ha efectuat un determinat empleat/da.
-SELECT repartidor, COUNT(repartidor) AS total_entregas FROM pedidos WHERE repartidor= "David" GROUP BY repartidor;
+SELECT nombre, apellido1, apellido2, COUNT(repartos_domicilio.id_empleado) AS total_entregas FROM repartos_domicilio JOIN empleados ON repartos_domicilio.id_empleado = empleados.id_empleado WHERE repartos_domicilio.id_empleado = 2 GROUP BY repartos_domicilio.id_empleado;

@@ -30,8 +30,6 @@ CREATE TABLE IF NOT EXISTS `pizzeria`.`pedidos` (
   `id_pedido` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `fecha` DATETIME NOT NULL,
   `entrega` ENUM("domicilio", "tienda") NOT NULL,
-  `repartidor` VARCHAR(45) NULL,
-  `hora_entrega` TIME NULL,
   `precio_total` FLOAT UNSIGNED NOT NULL,
   `id_cliente` INT UNSIGNED NOT NULL,
   `id_tienda` INT UNSIGNED NOT NULL,
@@ -112,6 +110,27 @@ CREATE TABLE IF NOT EXISTS `pizzeria`.`productos_pedido` (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `pizzeria`.`repartos_domicilio` (
+  `id_reparto_domicilio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_empleado` INT UNSIGNED NOT NULL,
+  `id_pedido` INT UNSIGNED NOT NULL,
+  `hora_entrega` DATETIME NOT NULL,
+  PRIMARY KEY (`id_reparto_domicilio`),
+  UNIQUE INDEX `idrepartos_domicilio_UNIQUE` (`id_reparto_domicilio` ASC) VISIBLE,
+  INDEX `fK_id_empleado_idx` (`id_empleado` ASC) VISIBLE,
+  INDEX `FK_id_pedido_idx` (`id_pedido` ASC) VISIBLE,
+  CONSTRAINT `FK_id_empleado_reparto`
+    FOREIGN KEY (`id_empleado`)
+    REFERENCES `pizzeria`.`empleados` (`id_empleado`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_id_pedido_reparto`
+    FOREIGN KEY (`id_pedido`)
+    REFERENCES `pizzeria`.`pedidos` (`id_pedido`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 INSERT INTO clientes VALUES(1, "Jose", "Bermudez", "Pascal", "Pedrell, 24, 2-2", "08032", "Barcelona", "Barcelona", 654789123);
 INSERT INTO clientes VALUES(2, "Antonio", "Porcuna", "Saez", "Balmes, 15, 1-2", "08024", "Barcelona", "Barcelona", 698574132);
 INSERT INTO clientes VALUES(3, "Luís", "Julià", "Ávila", "Arpella, 12", "08340", "Vilassar de Mar", "Barcelona", 632159847);
@@ -119,9 +138,9 @@ INSERT INTO clientes VALUES(3, "Luís", "Julià", "Ávila", "Arpella, 12", "0834
 INSERT INTO tiendas VALUES(1, "Maragall, 124, local", "08031", "Barcelona", "Barcelona");
 INSERT INTO tiendas VALUES(2, "Arpella, 45", "08340", "Vilassar de Mar", "Barcelona");
 
-INSERT INTO pedidos VALUES(1, "2024-09-15", "domicilio", "David", "21:45", 15, 1, 1);
-INSERT INTO pedidos VALUES(2, "2024-09-16", "domicilio", "David", "22:03", 29, 2, 1);
-INSERT INTO pedidos VALUES(3, "2024-09-17", "tienda", "Federico", "20:42", 17.5, 3, 2);
+INSERT INTO pedidos VALUES(1, "2024-09-15", "domicilio", 15, 1, 1);
+INSERT INTO pedidos VALUES(2, "2024-09-16", "domicilio", 29, 2, 1);
+INSERT INTO pedidos VALUES(3, "2024-09-17", "tienda", 17.5, 3, 2);
 
 INSERT INTO categorias_pizzas VALUES(1, "Clásicas");
 INSERT INTO categorias_pizzas VALUES(2, "Carne");
@@ -146,3 +165,6 @@ INSERT INTO productos_pedido VALUES(2, 4, 2);
 INSERT INTO productos_pedido VALUES(2, 5, 2);
 INSERT INTO productos_pedido VALUES(3, 2, 1);
 INSERT INTO productos_pedido VALUES(3, 6, 1);
+
+INSERT INTO repartos_domicilio VALUES (1, 2, 1, "2024-09-15 21:45");
+INSERT INTO repartos_domicilio VALUES (2, 2, 2, "2024-09-16 22:03");

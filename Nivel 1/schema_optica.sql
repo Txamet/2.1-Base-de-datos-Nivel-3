@@ -39,14 +39,21 @@ CREATE TABLE IF NOT EXISTS `optica`.`clientes` (
   `telefono` INT UNSIGNED NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `fecha_alta` DATE NOT NULL,
-  `Cliente_que_recomendo` INT UNSIGNED NULL,
+  `cliente_recomendado` INT UNSIGNED NULL,
   PRIMARY KEY (`id_cliente`),
   INDEX `idDirecciones_idx` (`id_direccion` ASC) VISIBLE,
+  UNIQUE INDEX `id_cliente_UNIQUE` (`id_cliente` ASC) VISIBLE,
+  INDEX `FK_id_cliente_recomendado_idx` (`cliente_recomendado` ASC) VISIBLE,
   CONSTRAINT `FK_idDirecciones`
     FOREIGN KEY (`id_direccion`)
     REFERENCES `optica`.`direcciones` (`id_direccion`)
     ON DELETE NO ACTION
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_id_cliente_recomendado`
+    FOREIGN KEY (`cliente_recomendado`)
+    REFERENCES `optica`.`clientes` (`id_cliente`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `optica`.`gafas` (

@@ -16,36 +16,6 @@ CREATE TABLE IF NOT EXISTS `youtube`.`usuarios` (
   UNIQUE INDEX `id_usuario_UNIQUE` (`id_usuario` ASC) VISIBLE)
 ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS `youtube`.`videos` (
-  `id_video` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `titulo` VARCHAR(45) NOT NULL,
-  `descripcion` VARCHAR(45) NOT NULL,
-  `tamano_archivo` FLOAT UNSIGNED NOT NULL,
-  `nombre_archivo` VARCHAR(45) NOT NULL,
-  `duracion` TIME NOT NULL,
-  `thumbnail` LONGTEXT NULL,
-  `total_reproducciones` INT UNSIGNED NULL,
-  `total_likes` INT UNSIGNED NULL,
-  `total_dislikes` INT UNSIGNED NULL,
-  `fecha_creacion` DATETIME NOT NULL,
-  `estado` ENUM("publico", "oculto", "privado") NOT NULL,
-  `id_usuario` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`id_video`),
-  INDEX `FK_idUsuario_idx` (`id_usuario` ASC) VISIBLE,
-  UNIQUE INDEX `id_video_UNIQUE` (`id_video` ASC) VISIBLE,
-  CONSTRAINT `FK_id_usuario_videos`
-    FOREIGN KEY (`id_usuario`)
-    REFERENCES `youtube`.`usuarios` (`id_usuario`)
-    ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS `youtube`.`etiquetas` (
-  `id_etiqueta` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id_etiqueta`))
-ENGINE = InnoDB;
-
 CREATE TABLE IF NOT EXISTS `youtube`.`canales` (
   `id_canal` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
@@ -60,6 +30,36 @@ CREATE TABLE IF NOT EXISTS `youtube`.`canales` (
     REFERENCES `youtube`.`usuarios` (`id_usuario`)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `youtube`.`videos` (
+  `id_video` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `titulo` VARCHAR(45) NOT NULL,
+  `descripcion` VARCHAR(45) NOT NULL,
+  `tamano_archivo` FLOAT UNSIGNED NOT NULL,
+  `nombre_archivo` VARCHAR(45) NOT NULL,
+  `duracion` TIME NOT NULL,
+  `thumbnail` LONGTEXT NULL,
+  `total_reproducciones` INT UNSIGNED NULL,
+  `total_likes` INT UNSIGNED NULL,
+  `total_dislikes` INT UNSIGNED NULL,
+  `fecha_creacion` DATETIME NOT NULL,
+  `estado` ENUM("publico", "oculto", "privado") NOT NULL,
+  `id_canal` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id_video`),
+  UNIQUE INDEX `id_video_UNIQUE` (`id_video` ASC) VISIBLE,
+  INDEX `FK_id_canal_videos_idx` (`id_canal` ASC) VISIBLE,
+  CONSTRAINT `FK_id_canal_videos`
+    FOREIGN KEY (`id_canal`)
+    REFERENCES `youtube`.`canales` (`id_canal`)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `youtube`.`etiquetas` (
+  `id_etiqueta` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_etiqueta`))
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `youtube`.`suscripciones` (
@@ -184,3 +184,21 @@ CREATE TABLE IF NOT EXISTS `youtube`.`etiquetas_en_videos` (
     ON DELETE RESTRICT
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `youtube`.`videos_playlist` (
+  `id_video` INT UNSIGNED NOT NULL,
+  `id_playlist` INT UNSIGNED NOT NULL,
+  INDEX `FK_id_video_vp_idx` (`id_video` ASC) VISIBLE,
+  INDEX `FK_id_playlist_vp_idx` (`id_playlist` ASC) VISIBLE,
+  CONSTRAINT `FK_id_video_vp`
+    FOREIGN KEY (`id_video`)
+    REFERENCES `youtube`.`videos` (`id_video`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_id_playlist_vp`
+    FOREIGN KEY (`id_playlist`)
+    REFERENCES `youtube`.`playlists` (`id_playlist`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
